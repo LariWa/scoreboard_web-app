@@ -13,7 +13,7 @@ import ResetModal from './components/ResetModal';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 
 function ScoreboardApp() {
-    const server = "ws://192.168.0.17:8080";
+    const server = "ws://scoreboard.local:8080";
     const [connected, setConnected] = useState(false);
     const [scoreL, setScoreL] = useState('-');
     const [scoreR, setScoreR] = useState('-');
@@ -24,7 +24,8 @@ function ScoreboardApp() {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const rwsRef = useRef(null);
-
+    const params = new URLSearchParams(window.location.search);
+    const switched = params.get("switched") === "true";
     const sendCmd = (command) => {
         if (rwsRef.current && rwsRef.current.readyState === WebSocket.OPEN) {
             rwsRef.current.send(command);
@@ -33,14 +34,18 @@ function ScoreboardApp() {
         }
     };
 
+    const sendScore = (isLeft, increase) => {
+        const side = (isLeft ^ switched) ? "Left" : "Right";
+        sendCmd("score" + side + (increase ? "Plus" : "Minus"))
+    }
     useEffect(() => {
         rwsRef.current = new ReconnectingWebSocket(server);
 
         rwsRef.current.addEventListener('message', (evt) => {
             try {
                 const obj = JSON.parse(evt.data);
-                setScoreL(obj.score[0]);
-                setScoreR(obj.score[1]);
+                setScoreL(obj.score[switched ? 1 : 0]);
+                setScoreR(obj.score[switched ? 0 : 1]);
                 setMinutes(obj.time[0]);
                 setSeconds(obj.time[1] < 10 ? "0" + obj.time[1] : obj.time[1]);
                 setShotclock(obj.shotclock);
@@ -71,8 +76,8 @@ function ScoreboardApp() {
             <div id="anzeige" className="flex w-full items-center flex-wrap ">
                 <ScoreControl
                     score={scoreL}
-                    onPlus={() => sendCmd('scoreLeftPlus')}
-                    onMinus={() => sendCmd('scoreLeftMinus')}
+                    sendScore={sendScore}
+                    isLeft={true}
                 />
 
                 <TimeDisplay
@@ -89,8 +94,8 @@ function ScoreboardApp() {
 
                 <ScoreControl
                     score={scoreR}
-                    onPlus={() => sendCmd('scoreRightPlus')}
-                    onMinus={() => sendCmd('scoreRightMinus')}
+                    sendScore={sendScore}
+                    isLeft={false}
                 />
             </div>
 
