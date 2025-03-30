@@ -71,6 +71,18 @@ function ScoreboardApp() {
         };
     }, [server]);
 
+    useEffect(() => {
+        const handleKeyPress = (event) => {
+          if (event.code === "Space") {
+            event.preventDefault(); 
+            sendCmd('shotclockReset')
+          }
+        };
+    
+        window.addEventListener("keydown", handleKeyPress);
+        return () => window.removeEventListener("keydown", handleKeyPress);
+      }, []);
+
     return (
         <div className="min-h-screen bg-black text-red-500 flex flex-col items-center justify-center p-4">
             <div id="anzeige" className="flex w-full items-center flex-wrap ">
