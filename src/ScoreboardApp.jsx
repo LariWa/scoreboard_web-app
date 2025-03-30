@@ -1,13 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-// SVG Imports
-
-
 import ExchangeAltSolid from '../icons/exchange-alt-solid.svg';
 import PlaySolid from '../icons/play-solid.svg';
 import PauseSolid from '../icons/pause-solid.svg';
 import UndoAltSolid from '../icons/undo-alt-solid.svg';
-
 import CheckSolid from '../icons/check-solid.svg';
 import TimesSolid from '../icons/times-solid.svg';
 import ScoreControl from './components/ScoreControl';
@@ -17,16 +13,17 @@ import ResetModal from './components/ResetModal';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 
 function ScoreboardApp() {
-    const server = "ws://192.168.4.1:8080";
+    const server = "ws://192.168.0.17:8080";
     const [connected, setConnected] = useState(false);
     const [scoreL, setScoreL] = useState('-');
     const [scoreR, setScoreR] = useState('-');
     const [minutes, setMinutes] = useState('00');
     const [seconds, setSeconds] = useState('00');
     const [shotclock, setShotclock] = useState('--');
+    const [state, setState] = useState("idle");
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const rwsRef = useRef(new ReconnectingWebSocket(server));
+    const rwsRef = useRef(null);
 
     const sendCmd = (command) => {
         if (rwsRef.current && rwsRef.current.readyState === WebSocket.OPEN) {
@@ -37,6 +34,8 @@ function ScoreboardApp() {
     };
 
     useEffect(() => {
+        rwsRef.current = new ReconnectingWebSocket(server);
+
         rwsRef.current.addEventListener('message', (evt) => {
             try {
                 const obj = JSON.parse(evt.data);
@@ -45,17 +44,24 @@ function ScoreboardApp() {
                 setMinutes(obj.time[0]);
                 setSeconds(obj.time[1] < 10 ? "0" + obj.time[1] : obj.time[1]);
                 setShotclock(obj.shotclock);
+                setState(obj.state)
+                console.log(obj.shotclock)
             } catch (error) {
                 console.error("Error parsing WebSocket message:", error);
             }
         });
 
         rwsRef.current.addEventListener('close', () => {
+            console.log("close")
             setConnected(false);
+
         });
 
         rwsRef.current.addEventListener('open', () => {
             setConnected(true);
+            console.log("open");
+
+
         });
 
         return () => {
@@ -67,7 +73,7 @@ function ScoreboardApp() {
 
     return (
         <div className="min-h-screen bg-black text-red-500 flex flex-col items-center justify-center p-4">
-            <div id="anzeige" className="flex w-full items-center flex-wrap">
+            <div id="anzeige" className="flex w-full items-center flex-wrap ">
                 <ScoreControl
                     score={scoreL}
                     onPlus={() => sendCmd('scoreLeftPlus')}
@@ -78,9 +84,12 @@ function ScoreboardApp() {
                     minutes={minutes}
                     seconds={seconds}
                     shotclock={shotclock}
-                    onTimePlus={() => sendCmd('timePlus')}
-                    onTimeMinus={() => sendCmd('timeMinus')}
+                    onMinutePlus={() => sendCmd('timeMinutePlus')}
+                    OnMinuteMinus={() => sendCmd('timeMinuteMinus')}
+                    onSecondPlus={() => sendCmd('timeSecondPlus')}
+                    onSecondMinus={() => sendCmd('timeSecondMinus')}
                     onShotclockReset={() => sendCmd('shotclockReset')}
+                    state={state}
                 />
 
                 <ScoreControl
@@ -92,26 +101,29 @@ function ScoreboardApp() {
 
             <div className="text-center mt-8">
                 <button
-                    className="bg-transparent border-2 border-white text-white rounded-lg p-4 flex items-center justify-center"
+                    className="w-24 h-24"
                     onClick={() => sendCmd('playPause')}
                 >
-                    <img src={PlaySolid} alt="Play" className="w-12 h-12 mr-2" />
-                    <img src={PauseSolid} alt="Pause" className="w-12 h-12" />
+                    {state !== "running" ? (
+                        <img src={PlaySolid} alt="Play" />
+                    ) : (
+                        <img src={PauseSolid} alt="Pause" />
+                    )}
                 </button>
             </div>
 
-            <div className="flex justify-center mt-8">
+            <div className="flex justify-center absolute bottom-0 left-0 space-x-4 m-4">
                 <button
-                    className="mx-4 bg-gray-700 rounded-lg p-4"
                     onClick={() => setIsModalOpen(true)}
+                    disabled={state == "running"}
                 >
-                    <img src={UndoAltSolid} alt="Reset" className="w-8 h-8" />
+                    <img src={UndoAltSolid} alt="Reset" />
                 </button>
                 <button
-                    className="mx-4 bg-gray-700 rounded-lg p-4"
                     onClick={() => sendCmd('switch')}
+                    disabled={state == "running"}
                 >
-                    <img src={ExchangeAltSolid} alt="Switch" className="w-8 h-8" />
+                    <img src={ExchangeAltSolid} alt="Switch" />
                 </button>
             </div>
 

@@ -7,40 +7,61 @@ export default function TimeDisplay({
 	minutes,
 	seconds,
 	shotclock,
-	onTimePlus,
-	onTimeMinus,
+	onMinutePlus,
+	OnMinuteMinus,
+	onSecondPlus,
+	onSecondMinus,
 	onShotclockReset,
+	state,
 }) {
 	return (
 		<div className="flex-grow text-center">
-			<div className="text-white text-9xl">
-				{minutes}:{seconds}
+			<div className='flex justify-center'>
+				<div className="mx-4 flex justify-center flex-col space-y-4">
+					<button
+						disabled={state == "running"}
+						onClick={onMinutePlus}
+					>
+						<img src={PlusSolid} alt="Increase" />
+					</button>
+					<button
+						disabled={state == "running"}
+						onClick={OnMinuteMinus}
+					>
+						<img src={MinusSolid} alt="Decrease" />
+					</button>
+				</div>
+				<div className={`text-${minutes < 1 ? 'red-500' : 'white'} text-9xl`}>
+					{minutes}:{seconds}
+
+				</div>
+				<div className="mx-4 flex justify-center flex-col space-y-4">
+					<button
+						disabled={state == "running"}
+						onClick={onSecondPlus}
+					>
+						<img src={PlusSolid} alt="Increase" />
+					</button>
+					<button
+						disabled={state == "running"}
+						onClick={onSecondMinus}
+					>
+						<img src={MinusSolid} alt="Decrease" />
+					</button>
+				</div>
 			</div>
-			<div className=" flex items-center justify-center">
-				<div className="text-green-500 text-9xl flex items-center justify-center">
+			<div className=" flex items-center justify-center space-x-4">
+				<div className={`text-${shotclock > 10 ? 'green' : 'red'}-500 text-9xl`}>
 					{shotclock}
 				</div>
 				<button
-					className="w-16 h-16"
+				className='w-24 h-24'
 					onClick={onShotclockReset}
 				>
-					<img src={UndoAltSolid} alt="Reset" className="w-full h-full" />
+					<img src={UndoAltSolid} alt="Reset" />
 				</button>
 			</div>
-			<div className="mt-4 flex justify-center">
-				<button
-					className="mx-2 w-16 h-16 flex items-center justify-center"
-					onClick={onTimePlus}
-				>
-					<img src={PlusSolid} alt="Increase" className="w-full h-full" />
-				</button>
-				<button
-					className="mx-2 w-16 h-16 flex items-center justify-center"
-					onClick={onTimeMinus}
-				>
-					<img src={MinusSolid} alt="Decrease" className="w-full h-full" />
-				</button>
-			</div>
+
 		</div>
 	);
 }

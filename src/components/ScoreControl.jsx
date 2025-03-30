@@ -4,19 +4,19 @@ import CaretDownSolid from '../../icons/caret-down-solid.svg';
 
 function ScoreControl({ score, onPlus, onMinus }) {
 	return (
-		<div className="flex-grow flex flex-col items-center">
+		<div className="flex-grow flex flex-col items-center space-y-4">
 			<button
-				className="text-4xl w-16 h-16 mb-4 flex items-center justify-center"
+				className='w-24 h-24'
 				onClick={onPlus}
 			>
-				<img src={CaretUpSolid} alt="Increase" className="w-full h-full" />
+				<img src={CaretUpSolid} alt="Increase" />
 			</button>
 			<div className="text-yellow-500 text-9xl">{score}</div>
 			<button
-				className="text-4xl w-16 h-16 mt-4 flex items-center justify-center"
+				className='w-24 h-24'
 				onClick={onMinus}
 			>
-				<img src={CaretDownSolid} alt="Decrease" className="w-full h-full" />
+				<img src={CaretDownSolid} alt="Decrease" />
 			</button>
 		</div>
 	);
