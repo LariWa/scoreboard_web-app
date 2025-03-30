@@ -17,6 +17,8 @@ function ScoreboardApp() {
     const [connected, setConnected] = useState(false);
     const [scoreL, setScoreL] = useState('-');
     const [scoreR, setScoreR] = useState('-');
+    const [colorL, setColorL] = useState('rgb(255, 0, 0)');
+    const [colorR, setColorR] = useState('rgb(255, 0, 0)');
     const [minutes, setMinutes] = useState('00');
     const [seconds, setSeconds] = useState('00');
     const [shotclock, setShotclock] = useState('--');
@@ -49,6 +51,8 @@ function ScoreboardApp() {
                 setMinutes(obj.time[0]);
                 setSeconds(obj.time[1] < 10 ? "0" + obj.time[1] : obj.time[1]);
                 setShotclock(obj.shotclock);
+                setColorL(obj.color[switched ? 1 : 0])
+                setColorR(obj.color[switched ? 0 : 1])
                 setState(obj.state)
             } catch (error) {
                 console.error("Error parsing WebSocket message:", error);
@@ -90,6 +94,7 @@ function ScoreboardApp() {
                     score={scoreL}
                     sendScore={sendScore}
                     isLeft={true}
+                    color={colorL}
                 />
 
                 <TimeDisplay
@@ -108,6 +113,7 @@ function ScoreboardApp() {
                     score={scoreR}
                     sendScore={sendScore}
                     isLeft={false}
+                    color={colorR}
                 />
             </div>
 
