@@ -45,23 +45,18 @@ function ScoreboardApp() {
                 setSeconds(obj.time[1] < 10 ? "0" + obj.time[1] : obj.time[1]);
                 setShotclock(obj.shotclock);
                 setState(obj.state)
-                console.log(obj.shotclock)
             } catch (error) {
                 console.error("Error parsing WebSocket message:", error);
             }
         });
 
         rwsRef.current.addEventListener('close', () => {
-            console.log("close")
             setConnected(false);
 
         });
 
         rwsRef.current.addEventListener('open', () => {
             setConnected(true);
-            console.log("open");
-
-
         });
 
         return () => {
