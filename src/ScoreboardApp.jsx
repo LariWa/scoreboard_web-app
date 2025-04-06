@@ -76,6 +76,17 @@ function ScoreboardApp() {
     }, [server]);
 
     useEffect(() => {
+        const handleContextMenu = (e) => {
+          e.preventDefault();
+        };
+        document.addEventListener('contextmenu', handleContextMenu);
+    
+        return () => {
+          document.removeEventListener('contextmenu', handleContextMenu);
+        };
+      }, []);
+
+    useEffect(() => {
         const handleKeyPress = (event) => {
           if (event.code === "Space") {
             event.preventDefault(); 
