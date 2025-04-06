@@ -14,6 +14,7 @@ export default function TimeDisplay({
 	onShotclockReset,
 	state,
 }) {
+	const shotclockWarningThreshold = 5; // if shotclock is <= than this value it will be red
 	return (
 		<div className="flex-grow text-center">
 			<div className='flex justify-center'>
@@ -51,7 +52,7 @@ export default function TimeDisplay({
 				</div>
 			</div>
 			<div className=" flex items-center justify-center space-x-4">
-				<div className={`text-${shotclock > 10 ? 'yellow-300' : 'red-500'} text-9xl`}>
+				<div className={`text-${shotclock > shotclockWarningThreshold ? 'yellow-300' : 'red-500'} text-9xl`}>
 					{shotclock}
 				</div>
 				<button
