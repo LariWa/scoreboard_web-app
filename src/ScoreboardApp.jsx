@@ -139,7 +139,7 @@ function ScoreboardApp() {
                 </button>
                 <button
                     onClick={() => sendCmd('switch')}
-                    disabled={state == "running"}
+                    disabled={!(state == "idle" || (state == "paused" && Number(minutes) == 0 && Number(seconds) == 0))}
                 >
                     <img src={ExchangeAltSolid} alt="Switch" />
                 </button>
