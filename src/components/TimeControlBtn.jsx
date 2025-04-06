@@ -18,12 +18,13 @@ export default function TimeControlBtn({ btnAction, actionInterval, isPlus, stat
 	return (
 		<button
 			disabled={state == "running"}
-			onMouseDown={startRepeatedCall}
-			onMouseUp={stopRepeatedCall}
-			onMouseLeave={stopRepeatedCall}
-			onTouchStart={startRepeatedCall}
-			onTouchEnd={stopRepeatedCall}
-			onTouchCancel={stopRepeatedCall}
+			// onMouseDown={startRepeatedCall}
+			// onMouseUp={stopRepeatedCall}
+			// onMouseLeave={stopRepeatedCall}
+			// onTouchStart={startRepeatedCall}
+			// onTouchEnd={stopRepeatedCall}
+			// onTouchCancel={stopRepeatedCall}
+			onClick={btnAction}
 		>
 			<img src={isPlus ? PlusSolid : MinusSolid} alt="Increase" />
 		</button>
