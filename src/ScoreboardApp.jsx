@@ -26,6 +26,7 @@ function ScoreboardApp() {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const rwsRef = useRef(null);
+    const checkWebsocketIntervall = useRef(null);
     const params = new URLSearchParams(window.location.search);
     const mirror = params.get("mirror") === "true";
     const sendCmd = (command) => {
@@ -40,10 +41,19 @@ function ScoreboardApp() {
         const side = (isLeft ^ mirror) ? "Left" : "Right";
         sendCmd("score" + side + (increase ? "Plus" : "Minus"))
     }
+
+    const resetConnectionCheck = () => {
+        clearInterval(checkWebsocketIntervall.current);
+        checkWebsocketIntervall.current = setInterval(() => {
+            setConnected(false);
+        }, 2000);
+    };
+
     useEffect(() => {
         rwsRef.current = new ReconnectingWebSocket(server);
 
         rwsRef.current.addEventListener('message', (evt) => {
+            resetConnectionCheck();
             try {
                 const obj = JSON.parse(evt.data);
                 setScoreL(obj.score[mirror ? 1 : 0]);
@@ -61,11 +71,12 @@ function ScoreboardApp() {
 
         rwsRef.current.addEventListener('close', () => {
             setConnected(false);
-
+            clearInterval(checkWebsocketIntervall.current);
         });
 
         rwsRef.current.addEventListener('open', () => {
             setConnected(true);
+            resetConnectionCheck();
         });
 
         return () => {
@@ -77,26 +88,26 @@ function ScoreboardApp() {
 
     useEffect(() => {
         const handleContextMenu = (e) => {
-          e.preventDefault();
+            e.preventDefault();
         };
         document.addEventListener('contextmenu', handleContextMenu);
-    
+
         return () => {
-          document.removeEventListener('contextmenu', handleContextMenu);
+            document.removeEventListener('contextmenu', handleContextMenu);
         };
-      }, []);
+    }, []);
 
     useEffect(() => {
         const handleKeyPress = (event) => {
-          if (event.code === "Space") {
-            event.preventDefault(); 
-            sendCmd('shotclockReset')
-          }
+            if (event.code === "Space") {
+                event.preventDefault();
+                sendCmd('shotclockReset')
+            }
         };
-    
+
         window.addEventListener("keydown", handleKeyPress);
         return () => window.removeEventListener("keydown", handleKeyPress);
-      }, []);
+    }, []);
 
     return (
         <div className="min-h-screen bg-black flex flex-col items-center justify-center p-4">
