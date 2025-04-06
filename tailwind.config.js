@@ -6,6 +6,11 @@ module.exports = {
 		},
 	  },
 	},
+	safelist: [
+		'text-yellow-500',
+		'text-green-500',
+		'text-red-500',
+	  ],
 	variants: {
 		opacity: ({ after }) => after(['disabled']),
 	  backgroundColor: ['responsive', 'hover', 'focus', 'active', 'disabled'],

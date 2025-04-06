@@ -88,7 +88,7 @@ function ScoreboardApp() {
       }, []);
 
     return (
-        <div className="min-h-screen bg-black text-red-500 flex flex-col items-center justify-center p-4">
+        <div className="min-h-screen bg-black flex flex-col items-center justify-center p-4">
             <div id="anzeige" className="flex w-full items-center flex-wrap ">
                 <ScoreControl
                     score={scoreL}
