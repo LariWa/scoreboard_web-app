@@ -27,7 +27,7 @@ function ScoreboardApp() {
 
     const rwsRef = useRef(null);
     const params = new URLSearchParams(window.location.search);
-    const mirro = params.get("mirro") === "true";
+    const mirror = params.get("mirror") === "true";
     const sendCmd = (command) => {
         if (rwsRef.current && rwsRef.current.readyState === WebSocket.OPEN) {
             rwsRef.current.send(command);
@@ -37,7 +37,7 @@ function ScoreboardApp() {
     };
 
     const sendScore = (isLeft, increase) => {
-        const side = (isLeft ^ mirro) ? "Left" : "Right";
+        const side = (isLeft ^ mirror) ? "Left" : "Right";
         sendCmd("score" + side + (increase ? "Plus" : "Minus"))
     }
     useEffect(() => {
@@ -46,13 +46,13 @@ function ScoreboardApp() {
         rwsRef.current.addEventListener('message', (evt) => {
             try {
                 const obj = JSON.parse(evt.data);
-                setScoreL(obj.score[mirro ? 1 : 0]);
-                setScoreR(obj.score[mirro ? 0 : 1]);
+                setScoreL(obj.score[mirror ? 1 : 0]);
+                setScoreR(obj.score[mirror ? 0 : 1]);
                 setMinutes(obj.time[0]);
                 setSeconds(obj.time[1] < 10 ? "0" + obj.time[1] : obj.time[1]);
                 setShotclock(obj.shotclock);
-                setColorL(obj.color[mirro ? 1 : 0])
-                setColorR(obj.color[mirro ? 0 : 1])
+                setColorL(obj.color[mirror ? 1 : 0])
+                setColorR(obj.color[mirror ? 0 : 1])
                 setState(obj.state)
             } catch (error) {
                 console.error("Error parsing WebSocket message:", error);
