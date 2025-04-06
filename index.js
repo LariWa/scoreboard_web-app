@@ -12019,7 +12019,18 @@ function TimeDisplay({
   ] });
 }
 function ConnectionStatus({ connected }) {
-  return !connected ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "fixed inset-0 bg-black/55 flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-gray-800 p-8 rounded-lg text-center text-white text-6xl border-4 border-red-600", children: "Nicht verbunden!" }) }) : null;
+  const [online, setOnline] = reactExports.useState(navigator.onLine);
+  reactExports.useEffect(() => {
+    const goOnline = () => setOnline(true);
+    const goOffline = () => setOnline(false);
+    window.addEventListener("online", goOnline);
+    window.addEventListener("offline", goOffline);
+    return () => {
+      window.removeEventListener("online", goOnline);
+      window.removeEventListener("offline", goOffline);
+    };
+  }, []);
+  return !connected || !online ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "fixed inset-0 bg-black/55 flex items-center justify-center", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "bg-gray-800 p-8 rounded-lg text-center text-white text-6xl border-4 border-red-600", children: "Nicht verbunden!" }) }) : null;
 }
 function ResetModal({ isOpen, onClose, onConfirm, checkIcon, timesIcon }) {
   if (!isOpen) return null;
@@ -12623,6 +12634,7 @@ function ScoreboardApp() {
   const [state, setState] = reactExports.useState("idle");
   const [isModalOpen, setIsModalOpen] = reactExports.useState(false);
   const rwsRef = reactExports.useRef(null);
+  const checkWebsocketIntervall = reactExports.useRef(null);
   const params = new URLSearchParams(window.location.search);
   const mirror = params.get("mirror") === "true";
   const sendCmd = (command) => {
@@ -12636,9 +12648,16 @@ function ScoreboardApp() {
     const side = isLeft ^ mirror ? "Left" : "Right";
     sendCmd("score" + side + (increase ? "Plus" : "Minus"));
   };
+  const resetConnectionCheck = () => {
+    clearInterval(checkWebsocketIntervall.current);
+    checkWebsocketIntervall.current = setInterval(() => {
+      setConnected(false);
+    }, 2e3);
+  };
   reactExports.useEffect(() => {
     rwsRef.current = new ReconnectingWebSocket(server);
     rwsRef.current.addEventListener("message", (evt) => {
+      resetConnectionCheck();
       try {
         const obj = JSON.parse(evt.data);
         setScoreL(obj.score[mirror ? 1 : 0]);
@@ -12655,9 +12674,11 @@ function ScoreboardApp() {
     });
     rwsRef.current.addEventListener("close", () => {
       setConnected(false);
+      clearInterval(checkWebsocketIntervall.current);
     });
     rwsRef.current.addEventListener("open", () => {
       setConnected(true);
+      resetConnectionCheck();
     });
     return () => {
       if (rwsRef.current) {
