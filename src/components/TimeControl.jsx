@@ -31,7 +31,7 @@ export default function TimeDisplay({
 						<img src={MinusSolid} alt="Decrease" />
 					</button>
 				</div>
-				<div className={`text-${minutes < 1 ? 'red-500' : 'white'} text-9xl`}>
+				<div className={`w-80 text-${minutes < 1 ? 'red-500' : 'white'} text-9xl`}>
 					{minutes}:{seconds}
 
 				</div>
