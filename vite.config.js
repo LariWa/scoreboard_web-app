@@ -6,6 +6,7 @@ export default defineConfig({
   plugins: [react(),  tailwindcss()],
  
     build: {
+      minify: false, // Disable minification
       assetsDir: '', // Place assets directly in the output directory
       rollupOptions: {
         output: {
