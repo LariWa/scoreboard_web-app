@@ -54,6 +54,7 @@ function ScoreboardApp() {
 
         rwsRef.current.addEventListener('message', (evt) => {
             resetConnectionCheck();
+            setConnected(true)
             try {
                 const obj = JSON.parse(evt.data);
                 setScoreL(obj.score[mirror ? 1 : 0]);
