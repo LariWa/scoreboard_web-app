@@ -12651,6 +12651,7 @@ function ScoreboardApp() {
   const resetConnectionCheck = () => {
     clearInterval(checkWebsocketIntervall.current);
     checkWebsocketIntervall.current = setInterval(() => {
+      console.log(" no message setting to false");
       setConnected(false);
     }, 2e3);
   };
@@ -12658,6 +12659,7 @@ function ScoreboardApp() {
     rwsRef.current = new ReconnectingWebSocket(server);
     rwsRef.current.addEventListener("message", (evt) => {
       resetConnectionCheck();
+      setConnected(true);
       try {
         const obj = JSON.parse(evt.data);
         setScoreL(obj.score[mirror ? 1 : 0]);
