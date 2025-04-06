@@ -51,7 +51,7 @@ export default function TimeDisplay({
 				</div>
 			</div>
 			<div className=" flex items-center justify-center space-x-4">
-				<div className={`text-${shotclock > 10 ? 'yellow' : 'red'}-500 text-9xl`}>
+				<div className={`text-${shotclock > 10 ? 'yellow-300' : 'red-500'} text-9xl`}>
 					{shotclock}
 				</div>
 				<button
