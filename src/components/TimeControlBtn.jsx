@@ -6,6 +6,7 @@ export default function TimeControlBtn({ btnAction, actionInterval, isPlus, stat
 	const intervalRef = useRef(null);
 
 	const startRepeatedCall = () => {
+		clearInterval(intervalRef.current);
 		btnAction();
 		intervalRef.current = setInterval(btnAction, actionInterval);
 	};
