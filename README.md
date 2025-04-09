@@ -1,12 +1,12 @@
-# React + Vite
+# Scoreboard Webpage
+Webpage to control scoreboard from [hansu/rpi-canoepolo-scoreboard](https://github.com/hansu/rpi-canoepolo-scoreboard)
+![ScoreboardWebPage](https://github.com/user-attachments/assets/f8aa7159-75ef-4d82-9c07-5648bf3798e4)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Currently, two official plugins are available:
+## Set-up
+This project uses React with Vite and Tailwind.
+- run ```npm run install``` to install dependencies
+- run ```npm run dev``` to test locally
+- run ```npm run build``` to build
+- run ```npm run deploy``` to build and deploy build to the [build-branch](https://github.com/LariWa/scoreboard_web-app/tree/build) (optional: change commit message in ```package.json```)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
